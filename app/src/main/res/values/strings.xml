@@ -164,7 +164,7 @@
     <string name="settings_about_title">About &amp; Updates</string>
     <string name="settings_current_version">Current Version: %s</string>
     <string name="settings_github_repo">GitHub Repository</string>
-    <string name="settings_github_repo_name" translatable="false">DDOneApps/FakeCall</string>
+    <string name="settings_github_repo_name" translatable="false">ismaeloi1/FakeCall</string>
     <string name="settings_checking_updates">Checking…</string>
     <string name="settings_check_for_updates">Check for Updates</string>
     <string name="snackbar_up_to_date">You are on the latest version.</string>

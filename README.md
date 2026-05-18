@@ -1,4 +1,4 @@
-# FakeCall
+# LHUNA Opus VoIP
 
 <div align="center">
 
@@ -20,7 +20,7 @@
 
 ## Overview
 Ever wanted to get [that Feature of old Samsung phones](https://www.youtube.com/watch?v=OKV3Eei5JNE) to simulate an incoming call with audio on the originial phone app?
-Introducing FakeCall. Unlike other apps that merely mock a UI, this app integrates directly with the Android Telecom Framework to provide an indistinguishable calling experience. It has many features to make the call as real as possible.
+LHUNA Opus VoIP is a professional VoIP softphone. Unlike other apps that merely mock a UI, this app integrates directly with the Android Telecom Framework to provide an indistinguishable calling experience. It has many features to make the call as real as possible.
 
 <p align=center>
 
@@ -28,24 +28,24 @@ Introducing FakeCall. Unlike other apps that merely mock a UI, this app integrat
 
 </p>
 
--  **Original Dialer:** FakeCall uses your real Phone app to simulate the incoming Call by creating [a Phone Account in android's TelecomManager](https://developer.android.com/reference/android/telecom/TelecomManager)
--  **Customizable:** The app lets you customize the name of the fake phone account in the settings to match your real service provider.
+-  **Original Dialer:** LHUNA Opus VoIP integrates with the Android Telecom Framework to deliver real incoming calls by creating [a Phone Account in android's TelecomManager](https://developer.android.com/reference/android/telecom/TelecomManager)
+-  **Customizable:** The app lets you customize the VoIP provider name shown in Calling Accounts in the settings to match your real service provider.
 -  **Schedule:** Set exact Timers for when the call should come in
 -  **Audio Support:** You can upload audio files that play when the call is answered
 -  **Call History:** Simulated calls are being shown in call history
 -  **IVR Mode:** assign audio files to keys and make sub-menus
--  **Recording:** record microphone audio of a Fake call
+-  **Recording:** record microphone audio during a VoIP call
 -  **Automation API:** trigger calls from Tasker, MacroDroid, or ADB via a broadcast intent
--  **Accessibility Shortcut:** schedule a fake call from the system accessibility button using saved defaults
+-  **Accessibility Shortcut:** schedule a VoIP call from the system accessibility button using saved defaults
 -  **Quick Trigger Presets:** save up to 5 presets and expose them as launcher app actions + Quick Settings tiles
 
 ## Automation API
 
-FakeCall exposes a broadcast receiver for automation apps.
+LHUNA Opus VoIP exposes a broadcast receiver for automation apps.
 
 **Action**
 
-`com.upnp.fakeCall.TRIGGER`
+`io.lhuna.opus.voip.action.DIAL`
 
 **Extras**
 
@@ -53,33 +53,33 @@ FakeCall exposes a broadcast receiver for automation apps.
 - `caller_number` (`String`, optional)
 - `delay` (`Int`, optional, seconds)
 
-If one or more extras are omitted, FakeCall falls back to the saved **Automation & Quick Trigger Defaults** from Settings.
+If one or more extras are omitted, LHUNA Opus VoIP falls back to the saved **Automation & Quick Trigger Defaults** from Settings.
 
 **ADB example (recommended, package-targeted, no `-n` needed)**
 
 ```bash
-adb shell am broadcast -a com.upnp.fakeCall.TRIGGER -p com.upnp.fakeCall --es caller_name "Boss" --es caller_number "+49123456789" --ei delay 30
+adb shell am broadcast -a io.lhuna.opus.voip.action.DIAL -p io.lhuna.opus.voip --es caller_name "Boss" --es caller_number "+49123456789" --ei delay 30
 ```
 
 **Windows `cmd.exe` (single line)**
 
 ```cmd
-adb shell am broadcast -a com.upnp.fakeCall.TRIGGER -p com.upnp.fakeCall --es caller_name "Boss" --es caller_number "+49123456789" --ei delay 30
+adb shell am broadcast -a io.lhuna.opus.voip.action.DIAL -p io.lhuna.opus.voip --es caller_name "Boss" --es caller_number "+49123456789" --ei delay 30
 ```
 
 **Explicit component fallback**
 
 ```bash
-adb shell am broadcast -n com.upnp.fakeCall/.ExternalTriggerReceiver -a com.upnp.fakeCall.TRIGGER --es caller_name "Boss" --es caller_number "+49123456789" --ei delay 30
+adb shell am broadcast -n io.lhuna.opus.voip/.ExternalTriggerReceiver -a io.lhuna.opus.voip.action.DIAL --es caller_name "Boss" --es caller_number "+49123456789" --ei delay 30
 ```
 
 For Tasker, MacroDroid, etc. set:
-- Action: `com.upnp.fakeCall.TRIGGER`
-- Package: `com.upnp.fakeCall`
+- Action: `io.lhuna.opus.voip.action.DIAL`
+- Package: `io.lhuna.opus.voip`
 
 ## Accessibility Quick Trigger
 
-Enable the `FakeCall` accessibility service and assign it to the system accessibility button or shortcut. When invoked, it schedules a fake call using the saved quick-trigger defaults from Settings and shows a short confirmation toast.
+Enable the `LHUNA Opus` accessibility service and assign it to the system accessibility button or shortcut. When invoked, it schedules a VoIP call using the saved quick-trigger defaults from Settings and shows a short confirmation toast.
 
 You can configure these defaults inside:
 
@@ -88,7 +88,7 @@ You can configure these defaults inside:
 You can also save up to five quick trigger presets from the same section:
 
 - presets appear as launcher app actions (long-press the app icon)
-- presets are available as Quick Settings tiles (`FakeCall Preset 1` ... `FakeCall Preset 5`)
+- presets are available as Quick Settings tiles (`LHUNA Preset 1` ... `LHUNA Preset 5`)
 
 ## Screenshots
 
@@ -135,7 +135,7 @@ _Incoming call (example)_
 ##  Project Structure
 
 ```
-FakeCall/
+LHUNA/
 ├── .github/          # GitHub related files (e.g., issue templates, workflows) - TODO: If applicable
 ├── .idea/            # IntelliJ/Android Studio project configuration files
 ├── app/              # Main Android application module
@@ -156,7 +156,7 @@ FakeCall/
 
 ## Contributing
 
-We welcome contributions to FakeCall!
+We welcome contributions to LHUNA Opus VoIP!
 
 If you want to help translating, do it [Here](https://crowdin.com/project/fakecall/invite?h=ad1b7ff358ecf52e9f823b4f7f691f1d2725120) via crowdin
 ## License

@@ -1,10 +1,10 @@
-# FakeCall AI Implementation Guide
+# LHUNA Opus VoIP AI Implementation Guide
 
-This document describes the current implementation of the FakeCall Android app for future AI agents and contributors. It is based on the code in this repository at the time of writing and focuses on how the app behaves, how features are wired, where state is stored, and which areas require extra care.
+This document describes the current implementation of the LHUNA Opus VoIP Android app for future AI agents and contributors. It is based on the code in this repository at the time of writing and focuses on how the app behaves, how features are wired, where state is stored, and which areas require extra care.
 
 ## 1. Purpose And Mental Model
 
-FakeCall is a native Android app that simulates incoming phone calls through Android's real Telecom framework. The central idea is not to draw a fake call screen inside the app. Instead, the app registers a `PhoneAccount` and asks `TelecomManager` to add a new incoming call. The user's normal phone UI then handles ringing, answer, reject, audio routing, and call history integration as much as Android and the default dialer allow.
+LHUNA Opus VoIP is a native Android app that simulates incoming phone calls through Android's real Telecom framework. The central idea is not to draw a VoIP call screen inside the app. Instead, the app registers a `PhoneAccount` and asks `TelecomManager` to add a new incoming call. The user's normal phone UI then handles ringing, answer, reject, audio routing, and call history integration as much as Android and the default dialer allow.
 
 The core behavior pipeline is:
 
@@ -13,8 +13,8 @@ The core behavior pipeline is:
 3. For immediate calls, the app directly calls `TelecomManager.addNewIncomingCall`.
 4. For delayed calls, the app schedules an exact `AlarmManager` broadcast.
 5. The broadcast receiver registers/verifies the phone account and triggers the incoming call.
-6. `FakeCallConnectionService` creates a `FakeConnection`.
-7. `FakeConnection` controls ringing timeout, answer/reject/disconnect behavior, playback, IVR, alarm TTS, snooze, audio routing, and optional microphone recording.
+6. `CallConnectionService` creates a `CallConnection`.
+7. `CallConnection` controls ringing timeout, answer/reject/disconnect behavior, playback, IVR, alarm TTS, snooze, audio routing, and optional microphone recording.
 
 The app is a single-module Android project using Kotlin, Jetpack Compose, Material 3, AndroidX Navigation Compose, lifecycle ViewModel/state flows, Android Telecom, AlarmManager, Accessibility Service, Quick Settings tiles, dynamic launcher shortcuts, MediaPlayer, MediaRecorder, and TextToSpeech.
 
@@ -37,15 +37,15 @@ Top-level structure:
 Important source directories:
 
 ```text
-app/src/main/java/com/upnp/fakeCall/
+app/src/main/java/io/lhuna/opus/voip/
 |-- MainActivity.kt
-|-- FakeCallViewModel.kt
+|-- LhunaViewModel.kt
 |-- TelecomHelper.kt
-|-- FakeCallConnectionService.kt
-|-- FakeConnection.kt
-|-- FakeCallAlarmScheduler.kt
-|-- FakeCallAlarmReceiver.kt
-|-- FakeCallSchedulerService.kt
+|-- CallConnectionService.kt
+|-- CallConnection.kt
+|-- LHUNA Opus VoIPAlarmScheduler.kt
+|-- LHUNA Opus VoIPAlarmReceiver.kt
+|-- LHUNA Opus VoIPSchedulerService.kt
 |-- QuickTriggerManager.kt
 |-- QuickTriggerTileServices.kt
 |-- QuickTriggerAccessibilityService.kt
@@ -64,7 +64,7 @@ app/src/main/java/com/upnp/fakeCall/
 |   |-- IvrConfigStore.kt
 |   |-- IvrStateMachine.kt
 |-- ui/
-    |-- FakeCallApp.kt
+    |-- LHUNA Opus VoIPApp.kt
     |-- components/Components.kt
     |-- screens/DashboardScreen.kt
     |-- screens/SettingsScreen.kt
@@ -79,7 +79,7 @@ Resources:
 app/src/main/res/
 |-- values/strings.xml            Main string resources and feature copy
 |-- values-*/strings.xml          Localized strings
-|-- raw/fake_voice.mp3            Bundled audio file; current call playback uses stored URIs and does not reference R.raw directly
+|-- raw/lhuna_voice.mp3            Bundled audio file; current call playback uses stored URIs and does not reference R.raw directly
 |-- xml/accessibility_service_config.xml
 |-- xml/backup_rules.xml
 |-- xml/data_extraction_rules.xml
@@ -92,9 +92,9 @@ The code currently contains string resources and drawables for widget behavior, 
 
 Project:
 
-- Root project name: `Fakecall`
+- Root project name: `LhunaOpusVoip`
 - Included module: `:app`
-- Application id and namespace: `com.upnp.fakeCall`
+- Application id and namespace: `io.lhuna.opus.voip`
 - Minimum SDK: 24
 - Compile SDK: 36
 - Target SDK: 36
@@ -149,18 +149,18 @@ Declared components:
   - Exported, no-history, excluded from recents.
   - Used by dynamic launcher shortcuts to execute quick trigger presets.
 
-- `FakeCallConnectionService`
+- `CallConnectionService`
   - Exported and protected by `android.permission.BIND_TELECOM_CONNECTION_SERVICE`.
   - Has `android.telecom.ConnectionService` intent filter.
-  - Creates `FakeConnection` for incoming Telecom calls.
+  - Creates `CallConnection` for incoming Telecom calls.
 
-- `FakeCallSchedulerService`
+- `LHUNA Opus VoIPSchedulerService`
   - Foreground short service for coroutine-based countdown scheduling.
   - The current ViewModel path uses exact alarms for scheduled calls; this service still exists and can schedule a delayed call while showing a notification.
 
 - `CallRecordingForegroundService`
   - Foreground service with microphone type.
-  - Keeps a notification visible while `FakeConnection` records microphone audio.
+  - Keeps a notification visible while `CallConnection` records microphone audio.
 
 - `QuickTriggerAccessibilityService`
   - Exported and protected by `android.permission.BIND_ACCESSIBILITY_SERVICE`.
@@ -170,15 +170,15 @@ Declared components:
   - Exported Quick Settings tile services.
   - One tile slot per preset.
 
-- `FakeCallAlarmReceiver`
-  - Non-exported receiver for one-off/delayed fake calls.
+- `LHUNA Opus VoIPAlarmReceiver`
+  - Non-exported receiver for one-off/delayed VoIP calls.
 
 - `AlarmModeAlarmReceiver`
   - Non-exported receiver for alarm-mode calls and snooze/repeat scheduling.
 
 - `ExternalTriggerReceiver`
   - Exported receiver.
-  - Accepts `com.upnp.fakeCall.TRIGGER` and legacy `com.ddone.fakecall.TRIGGER`.
+  - Accepts `io.lhuna.opus.voip.TRIGGER` and legacy `io.lhuna.opus.voip.TRIGGER`.
   - Used by Tasker, MacroDroid, ADB, etc.
 
 ## 5. Main Runtime Architecture
@@ -187,17 +187,17 @@ Declared components:
 
 `MainActivity` enables edge-to-edge system bars, determines whether the app should start in settings, and sets Compose content:
 
-- `FakecallTheme`
-- `FakeCallApp(startInSettings = startInSettings)`
+- `LhunaTheme`
+- `LHUNA Opus VoIPApp(startInSettings = startInSettings)`
 
 `startInSettings` is true when the incoming intent action is either:
 
-- `com.upnp.fakeCall.action.OPEN_SETTINGS`
+- `io.lhuna.opus.voip.action.OPEN_SETTINGS`
 - `android.service.quicksettings.action.QS_TILE_PREFERENCES`
 
 ### 5.2 Navigation
 
-`FakeCallApp` owns the `NavHost` and top-level route graph:
+`LHUNA Opus VoIPApp` owns the `NavHost` and top-level route graph:
 
 - `onboarding`
 - `dashboard`
@@ -221,7 +221,7 @@ The mode bar switches between normal call mode and alarm mode. It is implemented
 
 ### 5.3 Permission Bootstrapping
 
-`FakeCallApp` requests these runtime permissions:
+`LHUNA Opus VoIPApp` requests these runtime permissions:
 
 - `READ_PHONE_STATE`
 - `READ_PHONE_NUMBERS`
@@ -229,7 +229,7 @@ The mode bar switches between normal call mode and alarm mode. It is implemented
 
 `READ_CONTACTS` is declared in the manifest but is not included in the top-level `RequiredPermissions` array. Contact picking uses Android contact pick intents and contact resolver access; any future contact-related change should check whether and when `READ_CONTACTS` needs to be requested.
 
-On launch, `FakeCallApp`:
+On launch, `LHUNA Opus VoIPApp`:
 
 1. Computes whether all required permissions are granted.
 2. Calls `viewModel.onPermissionStateChanged(granted)`.
@@ -239,15 +239,15 @@ When permissions become available, the ViewModel registers or updates the Teleco
 
 ## 6. ViewModel And App State
 
-`FakeCallViewModel` is the central state owner. It extends `AndroidViewModel` because it needs an application context for prefs, system services, resources, URI grants, and schedulers.
+`LhunaViewModel` is the central state owner. It extends `AndroidViewModel` because it needs an application context for prefs, system services, resources, URI grants, and schedulers.
 
 The public state is:
 
 ```kotlin
-val uiState: StateFlow<FakeCallUiState>
+val uiState: StateFlow<LHUNA Opus VoIPUiState>
 ```
 
-`FakeCallUiState` includes:
+`LHUNA Opus VoIPUiState` includes:
 
 - Onboarding completion
 - Provider name and provider enabled state
@@ -295,16 +295,16 @@ The app uses `SharedPreferences` heavily. There is no Room database or DataStore
 Main prefs file:
 
 ```text
-fake_call_prefs
+lhuna_prefs
 ```
 
 IVR prefs file:
 
 ```text
-fake_call_ivr
+lhuna_ivr
 ```
 
-Important `fake_call_prefs` keys used across classes:
+Important `lhuna_prefs` keys used across classes:
 
 ```text
 provider_name
@@ -364,9 +364,9 @@ runtime_snooze_caller_number
 runtime_snooze_provider_name
 ```
 
-Runtime overrides are a critical cross-component handoff. Receivers write them immediately before calling Telecom. `FakeConnection` reads and clears them when it is constructed. Any new feature that relies on per-call metadata must be careful because these values are global and transient, not scoped by a call id.
+Runtime overrides are a critical cross-component handoff. Receivers write them immediately before calling Telecom. `CallConnection` reads and clears them when it is constructed. Any new feature that relies on per-call metadata must be careful because these values are global and transient, not scoped by a call id.
 
-Important `fake_call_ivr` key:
+Important `lhuna_ivr` key:
 
 ```text
 ivr_config_xml
@@ -379,8 +379,8 @@ ivr_config_xml
 `TelecomHelper` wraps Telecom operations:
 
 - Builds a `PhoneAccountHandle` with:
-  - component: `FakeCallConnectionService`
-  - account id: `fake_call_provider_account`
+  - component: `CallConnectionService`
+  - account id: `lhuna_voip_account`
 
 - Registers a `PhoneAccount` with:
   - label from settings/default provider name
@@ -400,9 +400,9 @@ The account must be enabled by the user in Android Calling Accounts. Registering
    - normal call: `call_ring_timeout_seconds`, default 45
    - alarm call: `alarm_ring_timeout_seconds`, default 0 (unlimited)
 2. Builds incoming call extras:
-   - `extra_fake_caller_name`
-   - `extra_fake_caller_number`
-   - `extra_fake_call_source`
+   - `extra_caller_name`
+   - `extra_caller_number`
+   - `extra_call_source`
    - `extra_ring_timeout_seconds`
 3. Builds Telecom extras with:
    - `TelecomManager.EXTRA_INCOMING_CALL_ADDRESS`
@@ -411,7 +411,7 @@ The account must be enabled by the user in Android Calling Accounts. Registering
 
 ### 8.3 Creating The Connection
 
-`FakeCallConnectionService.onCreateIncomingConnection(...)` extracts:
+`CallConnectionService.onCreateIncomingConnection(...)` extracts:
 
 - caller number from `request.address.schemeSpecificPart` or extras
 - caller name from extras
@@ -421,12 +421,12 @@ The account must be enabled by the user in Android Calling Accounts. Registering
 It returns:
 
 ```kotlin
-FakeConnection(context = this, callerName, callerNumber, ringTimeoutSeconds)
+CallConnection(context = this, callerName, callerNumber, ringTimeoutSeconds)
 ```
 
-## 9. FakeConnection Behavior
+## 9. CallConnection Behavior
 
-`FakeConnection` is the runtime representation of the fake call. It extends `android.telecom.Connection`.
+`CallConnection` is the runtime representation of the VoIP call. It extends `android.telecom.Connection`.
 
 Initialization:
 
@@ -569,7 +569,7 @@ Custom IVR is stored as XML by `IvrConfigStore`.
   - other digits use current node routes
   - returns the new node or null
 
-When the active IVR node has audio, `FakeConnection` switches playback to that node's audio.
+When the active IVR node has audio, `CallConnection` switches playback to that node's audio.
 
 ### 9.5 TTS
 
@@ -592,7 +592,7 @@ Requirements:
 Runtime behavior:
 
 1. Start `CallRecordingForegroundService`.
-2. Create a timestamped filename: `fake_call_yyyyMMdd_HHmmss.m4a`.
+2. Create a timestamped filename: `lhuna_call_yyyyMMdd_HHmmss.m4a`.
 3. Record to a temp file in `cacheDir/recordings_tmp`.
 4. Use `MediaRecorder`:
    - source: `MIC`
@@ -606,14 +606,14 @@ Runtime behavior:
 Recording destination priority:
 
 1. User-selected document tree URI from `recordings_tree_uri`.
-2. `MediaStore.Downloads` relative path `Downloads/FakeCall` on Android Q+.
+2. `MediaStore.Downloads` relative path `Downloads/LHUNA Opus VoIP` on Android Q+.
 3. Internal app storage `filesDir/recordings`.
 
 If recording stop or export fails, the temp file and destination placeholder are cleaned up.
 
 ## 10. Normal Call Scheduling
 
-Normal dashboard calls are managed primarily by `FakeCallViewModel.scheduleFakeCall()`.
+Normal dashboard calls are managed primarily by `LhunaViewModel.scheduleLHUNA Opus VoIP()`.
 
 Validation before scheduling:
 
@@ -642,25 +642,25 @@ Immediate call path:
 Delayed call path:
 
 1. Compute `triggerAtMillis`.
-2. Cancel any existing one-off fake call alarm.
-3. Schedule exact alarm through `FakeCallAlarmScheduler`.
+2. Cancel any existing one-off scheduled call alarm.
+3. Schedule exact alarm through `LHUNA Opus VoIPAlarmScheduler`.
 4. Save `timer_ends_at`.
 5. Update UI state to running.
 
 Cancel path:
 
-1. Cancel `FakeCallAlarmScheduler`.
-2. Cancel `FakeCallSchedulerService`.
+1. Cancel `LHUNA Opus VoIPAlarmScheduler`.
+2. Cancel `LHUNA Opus VoIPSchedulerService`.
 3. Remove `timer_ends_at`.
 4. Clear active quick trigger slot.
 5. Refresh Quick Settings tiles.
 6. Update status.
 
-`FakeCallSchedulerService` is an alternate foreground-service countdown path. It registers the account, waits using coroutine `delay`, triggers Telecom if enabled, and stops. Current quick trigger and ViewModel delayed paths use `FakeCallAlarmScheduler`, not this service.
+`LHUNA Opus VoIPSchedulerService` is an alternate foreground-service countdown path. It registers the account, waits using coroutine `delay`, triggers Telecom if enabled, and stops. Current quick trigger and ViewModel delayed paths use `LHUNA Opus VoIPAlarmScheduler`, not this service.
 
 ## 11. One-Off Alarm Receiver
 
-`FakeCallAlarmReceiver` fires for normal delayed calls.
+`LHUNA Opus VoIPAlarmReceiver` fires for normal delayed calls.
 
 On receive:
 
@@ -733,13 +733,13 @@ Request resolution:
 Execution behavior:
 
 - Delay `0` or nearly immediate:
-  - cancel existing fake call alarm
+  - cancel existing scheduled call alarm
   - write runtime audio override if present
   - register/update phone account
   - trigger Telecom if account enabled
   - save caller fields and clear timer
 - Positive delay:
-  - cancel existing fake call alarm
+  - cancel existing scheduled call alarm
   - clear current runtime audio override
   - schedule exact alarm
   - save caller fields and `timer_ends_at`
@@ -757,7 +757,7 @@ On Android 7.1+ (`N_MR1`), presets become dynamic shortcuts:
 
 - Shortcut id: `quick_trigger_preset_<slot>`
 - Activity: `ShortcutTriggerActivity`
-- Action: `com.upnp.fakeCall.action.TRIGGER_PRESET`
+- Action: `io.lhuna.opus.voip.action.TRIGGER_PRESET`
 - Extra: `preset_slot`
 
 Shortcut labels are shortened:
@@ -798,8 +798,8 @@ The service does not inspect accessibility events or window content.
 
 `ExternalTriggerReceiver` is exported and accepts:
 
-- `com.upnp.fakeCall.TRIGGER`
-- `com.ddone.fakecall.TRIGGER`
+- `io.lhuna.opus.voip.TRIGGER`
+- `io.lhuna.opus.voip.TRIGGER`
 
 Extras:
 
@@ -812,7 +812,7 @@ Missing extras fall back to quick trigger defaults. Failure shows a toast.
 ADB example:
 
 ```bash
-adb shell am broadcast -a com.upnp.fakeCall.TRIGGER -p com.upnp.fakeCall --es caller_name "Boss" --es caller_number "+49123456789" --ei delay 30
+adb shell am broadcast -a io.lhuna.opus.voip.TRIGGER -p io.lhuna.opus.voip --es caller_name "Boss" --es caller_number "+49123456789" --ei delay 30
 ```
 
 ## 13. Alarm Mode
@@ -863,7 +863,7 @@ Repeat days use `java.time.DayOfWeek.value`:
 
 ### 13.2 Persistence
 
-`AlarmModeRepository` stores all alarms as a JSON array in `fake_call_prefs` under `alarm_mode_items`.
+`AlarmModeRepository` stores all alarms as a JSON array in `lhuna_prefs` under `alarm_mode_items`.
 
 Parsing is defensive:
 
@@ -905,14 +905,14 @@ Request code:
 1. Reads the alarm id and caller number. Returns if invalid.
 2. Reads provider name from prefs.
 3. Reads alarm message mode, TTS, repeat-TTS, custom audio, snooze, and speaker settings from intent extras.
-4. Writes runtime overrides for `FakeConnection`.
+4. Writes runtime overrides for `CallConnection`.
 5. Registers/updates phone account.
 6. If account is enabled, triggers incoming call with source `ALARM`.
 7. Handles repeat behavior:
    - no repeat days: disable the alarm, set next trigger to 0, cancel pending intent
    - repeat days: compute/schedule next trigger and update repository
 
-Important: alarm-mode TTS/custom-audio/snooze settings are passed to the connection through global runtime override prefs. `FakeConnection.consumeRuntimeOverrides()` clears those keys as soon as the connection is created.
+Important: alarm-mode TTS/custom-audio/snooze settings are passed to the connection through global runtime override prefs. `CallConnection.consumeRuntimeOverrides()` clears those keys as soon as the connection is created.
 
 ### 13.5 Snooze
 
@@ -921,7 +921,7 @@ Snooze can be triggered by:
 - Rejecting/missing a ringing alarm-mode call before it is answered
 - Pressing DTMF `1` when snooze is enabled
 
-`FakeConnection.triggerSnooze()`:
+`CallConnection.triggerSnooze()`:
 
 1. Guards against duplicate snooze.
 2. Uses runtime override caller number and snooze settings.
@@ -947,7 +947,7 @@ Onboarding completion is stored in `onboarding_complete`.
 
 ### 14.2 Dashboard
 
-`DashboardScreen` is the normal fake-call scheduling surface.
+`DashboardScreen` is the normal VoIP call scheduling surface.
 
 It includes:
 
@@ -1058,12 +1058,12 @@ Alarm custom audio:
 MP3 IVR folder:
 
 - Stored as `mp3_ivr_folder_uri` and `mp3_ivr_folder_name`.
-- `FakeConnection` queries children through `DocumentsContract`.
+- `CallConnection` queries children through `DocumentsContract`.
 
 Recording folder:
 
 - Stored as `recordings_tree_uri` and `recordings_folder_name`.
-- `FakeConnection` creates output documents with `DocumentsContract.createDocument`.
+- `CallConnection` creates output documents with `DocumentsContract.createDocument`.
 
 Any code that accepts a URI should ensure the app takes persistable URI permissions when the URI comes from Storage Access Framework. The ViewModel currently has methods such as `onAudioFileSelected`, `onRecordingFolderSelected`, and `onMp3IvrFolderSelected` that are responsible for this handoff.
 
@@ -1072,13 +1072,13 @@ Any code that accepts a URI should ensure the app takes persistable URI permissi
 `UpdateChecker` calls:
 
 ```text
-https://api.github.com/repos/DDOneApps/FakeCall/releases/latest
+https://api.github.com/repos/DDOneApps/LHUNA Opus VoIP/releases/latest
 ```
 
 It sets:
 
 - `Accept: application/vnd.github+json`
-- `User-Agent: FakeCall-Android`
+- `User-Agent: LHUNA Opus VoIP-Android`
 
 Response handling:
 
@@ -1092,7 +1092,7 @@ Version comparison:
 - Splits on non-digits
 - Compares numeric parts with missing parts treated as 0
 
-`FakeCallApp` shows a top update banner when `startupUpdate` is present.
+`LHUNA Opus VoIPApp` shows a top update banner when `startupUpdate` is present.
 
 ## 18. Battery Optimization Helpers
 
@@ -1125,7 +1125,7 @@ These are not necessarily bugs, but they matter for future AI work:
 - The repo has placeholder tests only. Behavioral changes to scheduling, alarms, IVR, or recording should add real unit tests where possible.
 - `SharedPreferences` keys are duplicated as private constants across several classes. Renaming a key in one place can silently break another feature.
 - Runtime override prefs are global and transient. Concurrent calls or overlapping scheduled triggers could race because overrides are not scoped by call id.
-- `FakeCallSchedulerService` still exists but current delayed scheduling paths use exact alarms. Confirm intended behavior before refactoring it away.
+- `LHUNA Opus VoIPSchedulerService` still exists but current delayed scheduling paths use exact alarms. Confirm intended behavior before refactoring it away.
 - Widget resources/strings exist, but no current app widget component is declared in the manifest.
 - Contact access and `READ_CONTACTS` permission should be revisited before expanding contact features.
 - Android 12+ exact alarm permission is essential for scheduled calls. Always preserve checks and user guidance.
@@ -1139,8 +1139,8 @@ These are not necessarily bugs, but they matter for future AI work:
 
 ### Add A New Setting
 
-1. Add a field to `FakeCallUiState` if the UI needs to observe it.
-2. Add a prefs key in `FakeCallViewModel` or a more appropriate owner.
+1. Add a field to `LHUNA Opus VoIPUiState` if the UI needs to observe it.
+2. Add a prefs key in `LhunaViewModel` or a more appropriate owner.
 3. Load the value in initial state.
 4. Add an `on...Change` method that writes prefs and updates state.
 5. Add UI in `SettingsScreen`.
@@ -1151,7 +1151,7 @@ These are not necessarily bugs, but they matter for future AI work:
 
 ### Add Per-Call Metadata
 
-Prefer passing data through Telecom incoming call extras if it only affects connection creation. If the data needs to be consumed by `FakeConnection` but is not currently in `FakeCallConnectionService`, consider adding it to `TelecomHelper.triggerIncomingCall` extras and reading it in the service.
+Prefer passing data through Telecom incoming call extras if it only affects connection creation. If the data needs to be consumed by `CallConnection` but is not currently in `CallConnectionService`, consider adding it to `TelecomHelper.triggerIncomingCall` extras and reading it in the service.
 
 Avoid adding more global runtime override prefs unless the metadata is truly transient and there is no cleaner Telecom extra path.
 
@@ -1173,7 +1173,7 @@ Then map `QuickTriggerExecution` to the source-specific feedback UI.
 2. Update `AlarmModeRepository` JSON save/parse.
 3. Update `AlarmModeScheduler.scheduleAt` extras.
 4. Update `AlarmModeAlarmReceiver` extra parsing.
-5. Decide how `FakeConnection` receives the setting:
+5. Decide how `CallConnection` receives the setting:
    - direct Telecom extra, preferred for connection-scoped data
    - runtime override pref, consistent with current alarm settings
 6. Update `AlarmCreateScreen` and `AlarmOverviewScreen` if visible.
@@ -1187,11 +1187,11 @@ Custom IVR:
 - Update XML serialization and parser.
 - Update `IvrStateMachine`.
 - Update settings UI import/export and node editor.
-- Update `FakeConnection.onPlayDtmfTone`.
+- Update `CallConnection.onPlayDtmfTone`.
 
 MP3-folder IVR:
 
-- Update folder listing/filtering in `FakeConnection`.
+- Update folder listing/filtering in `CallConnection`.
 - Update TTS strings.
 - Preserve page navigation semantics unless intentionally changing the user contract.
 
@@ -1199,9 +1199,9 @@ MP3-folder IVR:
 
 Touchpoints:
 
-- `FakeConnection.maybeStartMicRecording`
-- `FakeConnection.createRecordingDestination`
-- `FakeConnection.stopAndReleaseRecording`
+- `CallConnection.maybeStartMicRecording`
+- `CallConnection.createRecordingDestination`
+- `CallConnection.stopAndReleaseRecording`
 - `CallRecordingForegroundService`
 - Settings recording toggle/folder UI
 - Manifest foreground service permissions
@@ -1236,7 +1236,7 @@ High-value unit tests:
   - defaults fallback
   - preset save limit
   - removing slots shifts active/default slots
-  - immediate vs scheduled execution branches with fakes or wrappers
+  - immediate vs scheduled execution branches with stubs or wrappers
 
 - `IvrConfigStore`
   - XML round trip
@@ -1254,7 +1254,7 @@ High-value unit tests:
 Instrumentation/manual tests:
 
 - Calling account registration and enabled-state flow
-- Real incoming fake call UI through the default phone app
+- Real incoming VoIP call UI through the default phone app
 - Answer playback
 - Reject/missed timeout
 - Alarm TTS call
@@ -1273,25 +1273,25 @@ Instrumentation/manual tests:
 MainActivity.kt
   Compose entry point and start-in-settings intent handling.
 
-ui/FakeCallApp.kt
+ui/LHUNA Opus VoIPApp.kt
   Navigation graph, permission launcher, update banner, bottom mode switch.
 
-FakeCallViewModel.kt
+LhunaViewModel.kt
   Main app state, prefs loading/saving, scheduling, provider status, contact handling,
   IVR config operations, quick trigger settings, alarm mode orchestration.
 
 TelecomHelper.kt
   PhoneAccount registration/status and Telecom incoming call trigger.
 
-FakeCallConnectionService.kt
-  Converts Telecom incoming connection requests into FakeConnection instances.
+CallConnectionService.kt
+  Converts Telecom incoming connection requests into CallConnection instances.
 
-FakeConnection.kt
+CallConnection.kt
   Call lifecycle, ringing timeout, audio playback, IVR, TTS, snooze, recording,
   audio route handling, cleanup.
 
-FakeCallAlarmScheduler.kt / FakeCallAlarmReceiver.kt
-  One-off exact alarm scheduling and delayed normal fake call trigger.
+LHUNA Opus VoIPAlarmScheduler.kt / LHUNA Opus VoIPAlarmReceiver.kt
+  One-off exact alarm scheduling and delayed VoIP call trigger.
 
 QuickTriggerManager.kt
   Quick trigger defaults, presets, dynamic shortcuts, tile refresh, execution logic.
@@ -1341,7 +1341,7 @@ DelayFormatter.kt
 
 ## 24. Safe Development Guidance For AI Agents
 
-- Read `FakeCallViewModel.kt`, `FakeConnection.kt`, and `QuickTriggerManager.kt` before changing behavior. They contain most cross-feature contracts.
+- Read `LhunaViewModel.kt`, `CallConnection.kt`, and `QuickTriggerManager.kt` before changing behavior. They contain most cross-feature contracts.
 - Treat prefs keys as public internal API. Search all usages before renaming, deleting, or changing defaults.
 - Prefer central helpers:
   - use `TelecomHelper` for phone account and incoming calls

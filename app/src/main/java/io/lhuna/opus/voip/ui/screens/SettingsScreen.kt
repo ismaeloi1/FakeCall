@@ -905,7 +905,7 @@ fun SettingsScreen(
                                 icon = Icons.Outlined.Refresh,
                                 title = stringResource(R.string.settings_export_mailbox_title),
                                 subtitle = stringResource(R.string.settings_export_mailbox_subtitle),
-                                onClick = { ivrExportLauncher.launch("fakecall_mailbox.xml") }
+                                onClick = { ivrExportLauncher.launch("lhuna_mailbox.xml") }
                             )
                         }
                         item {
