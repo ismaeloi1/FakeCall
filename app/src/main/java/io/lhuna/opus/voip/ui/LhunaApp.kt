@@ -72,7 +72,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.lhuna.opus.voip.FakeCallViewModel
+import io.lhuna.opus.voip.LhunaViewModel
 import io.lhuna.opus.voip.R
 import io.lhuna.opus.voip.ReleaseInfo
 import io.lhuna.opus.voip.ui.screens.AlarmCreateScreen
@@ -117,8 +117,8 @@ private val RequiredPermissions = arrayOf(
 )
 
 @Composable
-fun FakeCallApp(
-    viewModel: FakeCallViewModel = viewModel(),
+fun LhunaApp(
+    viewModel: LhunaViewModel = viewModel(),
     startInSettings: Boolean = false
 ) {
     val navController = rememberNavController()
@@ -538,6 +538,7 @@ private fun hasAllPermissions(context: Context): Boolean {
 }
 
 private fun openUpdateUrl(context: Context, url: String) {
+    if (url.isBlank()) return
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     runCatching {
         context.startActivity(intent)

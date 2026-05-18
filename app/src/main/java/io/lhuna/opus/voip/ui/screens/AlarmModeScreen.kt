@@ -72,7 +72,7 @@ import io.lhuna.opus.voip.AlarmModeDraft
 import io.lhuna.opus.voip.AlarmModeItem
 import io.lhuna.opus.voip.AlarmSpeakerDefault
 import io.lhuna.opus.voip.AlarmModeScheduler
-import io.lhuna.opus.voip.FakeCallViewModel
+import io.lhuna.opus.voip.LhunaViewModel
 import io.lhuna.opus.voip.R
 import io.lhuna.opus.voip.ui.components.AnimatedIcon
 import io.lhuna.opus.voip.ui.components.ExpressiveButton
@@ -88,7 +88,7 @@ import java.util.Locale
 
 @Composable
 fun AlarmOverviewScreen(
-    viewModel: FakeCallViewModel,
+    viewModel: LhunaViewModel,
     onOpenSettings: () -> Unit,
     onOpenCreateAlarm: () -> Unit,
     onEditAlarm: (Long) -> Unit
@@ -330,7 +330,7 @@ private fun AlarmOverviewItem(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun AlarmCreateScreen(
-    viewModel: FakeCallViewModel,
+    viewModel: LhunaViewModel,
     onBack: () -> Unit,
     editAlarmId: Long? = null,
     modeNavigationBar: (@Composable () -> Unit)? = null

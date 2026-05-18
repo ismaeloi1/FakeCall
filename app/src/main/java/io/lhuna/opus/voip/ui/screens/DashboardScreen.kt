@@ -79,8 +79,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.lhuna.opus.voip.CustomPreset
 import io.lhuna.opus.voip.CallerInputMode
-import io.lhuna.opus.voip.FakeCallUiState
-import io.lhuna.opus.voip.FakeCallViewModel
+import io.lhuna.opus.voip.LhunaUiState
+import io.lhuna.opus.voip.LhunaViewModel
 import io.lhuna.opus.voip.R
 import io.lhuna.opus.voip.ScheduleKind
 import io.lhuna.opus.voip.ui.components.AnimatedIcon
@@ -103,7 +103,7 @@ import kotlin.math.absoluteValue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    viewModel: FakeCallViewModel,
+    viewModel: LhunaViewModel,
     onOpenSettings: () -> Unit,
     bottomFloatingInset: androidx.compose.ui.unit.Dp = 0.dp,
     modeNavigationBar: (@Composable () -> Unit)? = null
@@ -1020,19 +1020,19 @@ private fun rememberPickerState(initialIndex: Int): PickerState {
     }
 }
 
-private fun scheduleDisplay(context: android.content.Context, state: FakeCallUiState, is24Hour: Boolean): String {
+private fun scheduleDisplay(context: android.content.Context, state: LhunaUiState, is24Hour: Boolean): String {
     return when (state.scheduleKind) {
         ScheduleKind.CUSTOM_EXACT -> formatExactTime(state.customExactHour, state.customExactMinute, is24Hour)
-        ScheduleKind.CUSTOM_COUNTDOWN -> FakeCallViewModel.formatDelay(
+        ScheduleKind.CUSTOM_COUNTDOWN -> LhunaViewModel.formatDelay(
             context,
             state.customCountdownMinutes * 60 + state.customCountdownSeconds
         )
-        ScheduleKind.PRESET -> FakeCallViewModel.formatDelay(context, state.selectedDelaySeconds)
+        ScheduleKind.PRESET -> LhunaViewModel.formatDelay(context, state.selectedDelaySeconds)
     }
 }
 
 @Composable
-private fun scheduleSubtitle(state: FakeCallUiState): String {
+private fun scheduleSubtitle(state: LhunaUiState): String {
     return when (state.scheduleKind) {
         ScheduleKind.CUSTOM_EXACT -> stringResource(R.string.schedule_kind_exact_time)
         ScheduleKind.CUSTOM_COUNTDOWN -> stringResource(R.string.schedule_kind_countdown_timer)
@@ -1068,7 +1068,7 @@ private fun formatCustomPreset(
     is24Hour: Boolean
 ): String {
     return when (preset.kind) {
-        ScheduleKind.CUSTOM_COUNTDOWN -> FakeCallViewModel.formatDelay(
+        ScheduleKind.CUSTOM_COUNTDOWN -> LhunaViewModel.formatDelay(
             context,
             preset.minutes * 60 + preset.seconds
         )

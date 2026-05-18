@@ -77,9 +77,9 @@ class TelecomHelper(private val context: Context) {
         private const val DEFAULT_CALL_RING_TIMEOUT_SECONDS = 45
         private const val DEFAULT_ALARM_RING_TIMEOUT_SECONDS = 0
         const val ACCOUNT_ID = "lhuna_voip_account"
-        const val EXTRA_CALLER_NAME = "extra_fake_caller_name"
-        const val EXTRA_CALLER_NUMBER = "extra_fake_caller_number"
-        const val EXTRA_CALL_SOURCE = "extra_fake_call_source"
+        const val EXTRA_CALLER_NAME = "extra_caller_name"
+        const val EXTRA_CALLER_NUMBER = "extra_caller_number"
+        const val EXTRA_CALL_SOURCE = "extra_call_source"
         const val EXTRA_RING_TIMEOUT_SECONDS = "extra_ring_timeout_seconds"
     }
 }

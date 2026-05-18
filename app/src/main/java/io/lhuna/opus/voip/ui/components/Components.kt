@@ -84,7 +84,7 @@ import androidx.compose.material.icons.outlined.VolumeUp
 import io.lhuna.opus.voip.CallContact
 import io.lhuna.opus.voip.CallerInputMode
 import io.lhuna.opus.voip.CustomPreset
-import io.lhuna.opus.voip.FakeCallViewModel
+import io.lhuna.opus.voip.LhunaViewModel
 import io.lhuna.opus.voip.R
 
 fun <T> expressiveSpring() = spring<T>(
@@ -663,7 +663,7 @@ fun TimingSelectionCard(
                     onClick = { onPresetSelected(option) },
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = count),
                     modifier = Modifier.bounceClick(),
-                    label = { Text(FakeCallViewModel.formatDelay(context, option)) }
+                    label = { Text(LhunaViewModel.formatDelay(context, option)) }
                 )
             }
         }

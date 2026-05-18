@@ -49,7 +49,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.lhuna.opus.voip.FakeCallViewModel
+import io.lhuna.opus.voip.LhunaViewModel
 import io.lhuna.opus.voip.BatterySetupNavigator
 import io.lhuna.opus.voip.RomFamily
 import io.lhuna.opus.voip.R
@@ -61,7 +61,7 @@ import io.lhuna.opus.voip.ui.components.expressiveSpring
 
 @Composable
 fun OnboardingScreen(
-    viewModel: FakeCallViewModel,
+    viewModel: LhunaViewModel,
     onRequestPermissions: () -> Unit,
     onFinish: () -> Unit
 ) {

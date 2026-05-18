@@ -102,7 +102,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.lhuna.opus.voip.BuildConfig
-import io.lhuna.opus.voip.FakeCallViewModel
+import io.lhuna.opus.voip.LhunaViewModel
 import io.lhuna.opus.voip.QuickTriggerManager
 import io.lhuna.opus.voip.ReleaseInfo
 import io.lhuna.opus.voip.R
@@ -119,7 +119,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    viewModel: FakeCallViewModel,
+    viewModel: LhunaViewModel,
     onBack: () -> Unit,
     onRequestPermissions: () -> Unit
 ) {
@@ -434,7 +434,7 @@ fun SettingsScreen(
                         ) {
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 androidx.compose.material3.OutlinedTextField(
-                                    value = FakeCallViewModel.formatRingTimeout(context, state.callRingTimeoutSeconds),
+                                    value = LhunaViewModel.formatRingTimeout(context, state.callRingTimeoutSeconds),
                                     onValueChange = {},
                                     readOnly = true,
                                     label = { Text(stringResource(R.string.settings_call_ring_timeout_label)) },
@@ -460,7 +460,7 @@ fun SettingsScreen(
                                 ) {
                                     viewModel.ringTimeoutOptionsSeconds.forEach { timeoutSeconds ->
                                         DropdownMenuItem(
-                                            text = { Text(FakeCallViewModel.formatRingTimeout(context, timeoutSeconds)) },
+                                            text = { Text(LhunaViewModel.formatRingTimeout(context, timeoutSeconds)) },
                                             onClick = {
                                                 viewModel.onCallRingTimeoutChange(timeoutSeconds)
                                                 callRingTimeoutExpanded = false
@@ -482,7 +482,7 @@ fun SettingsScreen(
                         ) {
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 androidx.compose.material3.OutlinedTextField(
-                                    value = FakeCallViewModel.formatRingTimeout(context, state.alarmRingTimeoutSeconds),
+                                    value = LhunaViewModel.formatRingTimeout(context, state.alarmRingTimeoutSeconds),
                                     onValueChange = {},
                                     readOnly = true,
                                     label = { Text(stringResource(R.string.settings_alarm_ring_timeout_label)) },
@@ -508,7 +508,7 @@ fun SettingsScreen(
                                 ) {
                                     viewModel.ringTimeoutOptionsSeconds.forEach { timeoutSeconds ->
                                         DropdownMenuItem(
-                                            text = { Text(FakeCallViewModel.formatRingTimeout(context, timeoutSeconds)) },
+                                            text = { Text(LhunaViewModel.formatRingTimeout(context, timeoutSeconds)) },
                                             onClick = {
                                                 viewModel.onAlarmRingTimeoutChange(timeoutSeconds)
                                                 alarmRingTimeoutExpanded = false
@@ -595,7 +595,7 @@ fun SettingsScreen(
                                 )
                                 Box(modifier = Modifier.fillMaxWidth()) {
                                     androidx.compose.material3.OutlinedTextField(
-                                        value = FakeCallViewModel.formatDelay(context, state.quickTriggerDelaySeconds),
+                                        value = LhunaViewModel.formatDelay(context, state.quickTriggerDelaySeconds),
                                         onValueChange = {},
                                         readOnly = true,
                                         label = { Text(stringResource(R.string.settings_default_delay_label)) },
@@ -621,7 +621,7 @@ fun SettingsScreen(
                                     ) {
                                         viewModel.delayOptionsSeconds.forEach { delaySeconds ->
                                             DropdownMenuItem(
-                                                text = { Text(FakeCallViewModel.formatDelay(context, delaySeconds)) },
+                                                text = { Text(LhunaViewModel.formatDelay(context, delaySeconds)) },
                                                 onClick = {
                                                     viewModel.onQuickTriggerDelayChange(delaySeconds)
                                                     quickTriggerDelayExpanded = false
@@ -704,7 +704,7 @@ fun SettingsScreen(
                                                     )
                                                 }
                                                 Text(
-                                                    text = "${preset.callerName.ifBlank { stringResource(R.string.settings_preset_unknown_caller) }} • ${preset.callerNumber} • ${FakeCallViewModel.formatDelay(context, preset.delaySeconds)}",
+                                                    text = "${preset.callerName.ifBlank { stringResource(R.string.settings_preset_unknown_caller) }} • ${preset.callerNumber} • ${LhunaViewModel.formatDelay(context, preset.delaySeconds)}",
                                                     style = MaterialTheme.typography.labelLarge,
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
@@ -1494,7 +1494,7 @@ private fun MappingDialog(
     )
 }
 
-private fun openCallingAccounts(context: Context, viewModel: FakeCallViewModel) {
+private fun openCallingAccounts(context: Context, viewModel: LhunaViewModel) {
     val intent = viewModel.openCallingAccountsIntent()
     runCatching {
         context.startActivity(intent)
@@ -1517,6 +1517,7 @@ private fun openAccessibilitySettings(context: Context) {
 }
 
 private fun openUrl(context: Context, url: String) {
+    if (url.isBlank()) return
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     runCatching {
         context.startActivity(intent)
@@ -1527,4 +1528,4 @@ private fun openUrl(context: Context, url: String) {
     }
 }
 
-private const val GITHUB_REPO_URL = "https://github.com/DDOneApps/FakeCall"
+private const val GITHUB_REPO_URL = ""

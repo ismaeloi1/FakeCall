@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class FakeConnection(
+class CallConnection(
     private val context: Context,
     private val callerName: String,
     private val callerNumber: String,
@@ -551,7 +551,7 @@ class FakeConnection(
             .onFailure { Log.e(TAG, "Failed to start recording foreground service.", it) }
 
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        val filename = "fake_call_$timestamp.m4a"
+        val filename = "lhuna_call_$timestamp.m4a"
         val destination = createRecordingDestination(filename) ?: return
         val tempFile = buildTempRecordingFile(filename)
 
@@ -870,7 +870,7 @@ class FakeConnection(
     }
 
     companion object {
-        private const val TAG = "FakeConnection"
+        private const val TAG = "LhunaCall"
         private const val PREFS_NAME = "lhuna_prefs"
         private const val KEY_AUDIO_URI = "audio_uri"
         private const val KEY_RUNTIME_AUDIO_OVERRIDE_ENABLED = "runtime_audio_override_enabled"

@@ -115,7 +115,7 @@ class IvrConfigStore {
     }
 
     companion object {
-        private const val PREFS_NAME = "fake_call_ivr"
+        private const val PREFS_NAME = "lhuna_ivr"
         private const val KEY_CONFIG_XML = "ivr_config_xml"
 
         private const val TAG_ROOT = "ivr"
