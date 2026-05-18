@@ -229,7 +229,7 @@
     <!-- Default values -->
     <string name="default_audio_name">Default</string>
     <string name="default_provider_name">Fake Call Provider</string>
-    <string name="default_recordings_folder" translatable="false">Downloads/FakeCall</string>
+    <string name="default_recordings_folder" translatable="false">Downloads/LHUNA</string>
     <string name="default_ivr_node_title">Menu</string>
     <string name="default_caller_name">Unknown Caller</string>
     <string name="default_selected_folder">Selected folder</string>

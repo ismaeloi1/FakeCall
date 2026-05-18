@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Fakecall"
+        android:theme="@style/Theme.LhunaOpusVoip"
         tools:targetApi="31">
 
         <service
@@ -135,8 +135,7 @@
             android:name=".ExternalTriggerReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.upnp.fakeCall.TRIGGER" />
-                <action android:name="com.ddone.fakecall.TRIGGER" />
+                <action android:name="io.lhuna.opus.voip.action.DIAL" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -148,14 +147,14 @@
             android:launchMode="singleTask"
             android:noHistory="true"
             android:taskAffinity=""
-            android:theme="@style/Theme.Fakecall.ShortcutTrigger" />
+            android:theme="@style/Theme.LhunaOpusVoip.ShortcutTrigger" />
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:enableOnBackInvokedCallback="true"
-            android:theme="@style/Theme.Fakecall">
+            android:theme="@style/Theme.LhunaOpusVoip">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

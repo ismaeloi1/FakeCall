@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "com.upnp.fakeCall"
+    namespace = "io.lhuna.opus.voip"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.upnp.fakeCall"
+        applicationId = "io.lhuna.opus.voip"
         minSdk = 24
         targetSdk = 36
         versionCode = 24
