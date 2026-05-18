@@ -405,9 +405,9 @@ object QuickTriggerManager {
         runtimeAudioUri: String?,
         runtimeAudioName: String?
     ): Boolean {
-        FakeCallAlarmScheduler.cancel(context)
+        DialAlarmScheduler.cancel(context)
         configureRuntimeAudioOverride(context, null, null)
-        val scheduled = FakeCallAlarmScheduler.scheduleExact(
+        val scheduled = DialAlarmScheduler.scheduleExact(
             context = context,
             triggerAtMillis = triggerAtMillis,
             callerName = request.callerName,
@@ -435,7 +435,7 @@ object QuickTriggerManager {
         runtimeAudioUri: String?,
         runtimeAudioName: String?
     ): Boolean {
-        FakeCallAlarmScheduler.cancel(context)
+        DialAlarmScheduler.cancel(context)
         configureRuntimeAudioOverride(context, runtimeAudioUri, runtimeAudioName)
         val telecomHelper = TelecomHelper(context)
         telecomHelper.registerOrUpdatePhoneAccount(request.providerName)

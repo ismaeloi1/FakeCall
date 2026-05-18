@@ -47,7 +47,7 @@ class CallRecordingForegroundService : Service() {
     }
 
     companion object {
-        private const val CHANNEL_ID = "fake_call_recording"
+        private const val CHANNEL_ID = "lhuna_recording"
         private const val NOTIFICATION_ID = 201
 
         fun start(context: Context) {

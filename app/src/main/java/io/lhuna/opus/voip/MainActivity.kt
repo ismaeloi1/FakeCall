@@ -6,8 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import io.lhuna.opus.voip.ui.FakeCallApp
-import io.lhuna.opus.voip.ui.theme.FakecallTheme
+import io.lhuna.opus.voip.ui.LhunaApp
+import io.lhuna.opus.voip.ui.theme.LhunaTheme
 import android.graphics.Color
 
 class MainActivity : ComponentActivity() {
@@ -19,8 +19,8 @@ class MainActivity : ComponentActivity() {
         )
         val startInSettings = shouldOpenSettings(intent)
         setContent {
-            FakecallTheme {
-                FakeCallApp(startInSettings = startInSettings)
+            LhunaTheme {
+                LhunaApp(startInSettings = startInSettings)
             }
         }
     }

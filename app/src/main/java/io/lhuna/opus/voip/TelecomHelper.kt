@@ -15,7 +15,7 @@ class TelecomHelper(private val context: Context) {
 
     fun accountHandle(): PhoneAccountHandle {
         return PhoneAccountHandle(
-            ComponentName(context, FakeCallConnectionService::class.java),
+            ComponentName(context, CallConnectionService::class.java),
             ACCOUNT_ID
         )
     }
@@ -51,9 +51,9 @@ class TelecomHelper(private val context: Context) {
                 IncomingCallSource.CALL -> prefs.getInt(KEY_CALL_RING_TIMEOUT_SECONDS, DEFAULT_CALL_RING_TIMEOUT_SECONDS)
             }.coerceAtLeast(0)
             val incomingExtras = Bundle().apply {
-                putString(EXTRA_FAKE_CALLER_NAME, callerName.trim())
-                putString(EXTRA_FAKE_CALLER_NUMBER, normalizedNumber)
-                putString(EXTRA_FAKE_CALL_SOURCE, source.storageValue)
+                putString(EXTRA_CALLER_NAME, callerName.trim())
+                putString(EXTRA_CALLER_NUMBER, normalizedNumber)
+                putString(EXTRA_CALL_SOURCE, source.storageValue)
                 putInt(EXTRA_RING_TIMEOUT_SECONDS, timeoutSeconds)
             }
 
@@ -76,10 +76,10 @@ class TelecomHelper(private val context: Context) {
         private const val KEY_ALARM_RING_TIMEOUT_SECONDS = "alarm_ring_timeout_seconds"
         private const val DEFAULT_CALL_RING_TIMEOUT_SECONDS = 45
         private const val DEFAULT_ALARM_RING_TIMEOUT_SECONDS = 0
-        const val ACCOUNT_ID = "fake_call_provider_account"
-        const val EXTRA_FAKE_CALLER_NAME = "extra_fake_caller_name"
-        const val EXTRA_FAKE_CALLER_NUMBER = "extra_fake_caller_number"
-        const val EXTRA_FAKE_CALL_SOURCE = "extra_fake_call_source"
+        const val ACCOUNT_ID = "lhuna_voip_account"
+        const val EXTRA_CALLER_NAME = "extra_fake_caller_name"
+        const val EXTRA_CALLER_NUMBER = "extra_fake_caller_number"
+        const val EXTRA_CALL_SOURCE = "extra_fake_call_source"
         const val EXTRA_RING_TIMEOUT_SECONDS = "extra_ring_timeout_seconds"
     }
 }

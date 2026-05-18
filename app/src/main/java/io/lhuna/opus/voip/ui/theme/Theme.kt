@@ -25,7 +25,7 @@ private val ExpressiveShapes = Shapes(
 )
 
 @Composable
-fun FakecallTheme(
+fun LhunaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

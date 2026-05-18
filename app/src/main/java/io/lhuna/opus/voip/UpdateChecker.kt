@@ -20,13 +20,14 @@ sealed interface UpdateCheckResult {
 
 class UpdateChecker {
     suspend fun checkForUpdate(currentVersionName: String): UpdateCheckResult = withContext(Dispatchers.IO) {
+        if (LATEST_RELEASE_API.isBlank()) return@withContext UpdateCheckResult.Unavailable
         runCatching {
             val connection = (URL(LATEST_RELEASE_API).openConnection() as HttpURLConnection).apply {
                 requestMethod = "GET"
                 connectTimeout = 8_000
                 readTimeout = 8_000
                 setRequestProperty("Accept", "application/vnd.github+json")
-                setRequestProperty("User-Agent", "FakeCall-Android")
+                setRequestProperty("User-Agent", "LhunaOpus-Android")
             }
 
             val responseCode = connection.responseCode
@@ -87,7 +88,7 @@ class UpdateChecker {
     }
 
     companion object {
-        private const val LATEST_RELEASE_API = "https://api.github.com/repos/DDOneApps/FakeCall/releases/latest"
-        private const val LATEST_RELEASE_WEB = "https://github.com/DDOneApps/FakeCall/releases/latest"
+        private const val LATEST_RELEASE_API = ""
+        private const val LATEST_RELEASE_WEB = ""
     }
 }
