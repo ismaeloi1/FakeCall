@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Fake Call</string>
+    <string name="app_name">LHUNA Opus VoIP</string>
     <!-- Onboarding -->
-    <string name="onboarding_title">Добро пожаловать в FakeCall</string>
+    <string name="onboarding_title">Добро пожаловать в LHUNA Opus VoIP</string>
     <string name="onboarding_subtitle">Реалистичные фейковые звонки с выразительной анимацией и мгновенным планированием.</string>
     <string name="onboarding_features_title">Основные возможности</string>
     <string name="feature_realistic_calls_title">Реалистичные входящие звонки</string>
@@ -15,7 +15,7 @@
     <string name="permission_mic_subtitle">Необходимы для симуляции звонков и записи аудио.</string>
     <string name="permission_mic_action">Предоставить разрешения</string>
     <string name="permission_phone_title">Совершение звонков и управление ими</string>
-    <string name="permission_phone_subtitle">Включите FakeCall в системных аккаунтах звонков.</string>
+    <string name="permission_phone_subtitle">Включите LHUNA Opus в системных аккаунтах звонков.</string>
     <string name="permission_phone_action">Открыть аккаунты звонков</string>
     <string name="permission_alarms_title">Точные будильники и напоминания</string>
     <string name="permission_alarms_subtitle">Нужны для звонков в точное время на Android 12+.</string>
@@ -27,7 +27,7 @@
     <string name="onboarding_finish_setup">Завершить настройку</string>
     <string name="onboarding_finish_setup_needs_permissions">Завершить настройку (нужны разрешения)</string>
     <!-- Dashboard -->
-    <string name="app_title">FakeCall</string>
+    <string name="app_title">LHUNA</string>
     <string name="app_subtitle">Запланируйте идеальный выход</string>
     <string name="cd_open_settings">Открыть настройки</string>
     <string name="action_cancel_call">Отменить звонок</string>
@@ -77,7 +77,7 @@
     <string name="settings_recording_folder_title">Папка для записей</string>
     <string name="settings_recording_folder_subtitle">Сохранять в: %s</string>
     <string name="settings_reset_recording_folder_title">Сбросить папку записей</string>
-    <string name="settings_reset_recording_folder_subtitle">Использовать Downloads/FakeCall</string>
+    <string name="settings_reset_recording_folder_subtitle">Использовать Downloads/LHUNA</string>
     <string name="settings_category_automation">Автоматизация</string>
     <string name="settings_automation_title">Автоматизация и значения по умолчанию</string>
     <string name="settings_automation_subtitle">Используются внешними интентами и ярлыком специальных возможностей.</string>
@@ -87,17 +87,17 @@
     <string name="settings_default_caller_name_label">Имя звонящего по умолчанию</string>
     <string name="settings_default_caller_number_label">Номер звонящего по умолчанию</string>
     <string name="settings_default_delay_label">Задержка по умолчанию</string>
-    <string name="settings_quick_triggers_audio_note">Быстрые триггеры используют аудио из раздела «Аудио» выше, включая выбранный файл или стандартное воспроизведение.</string>
+    <string name="settings_quick_triggers_audio_note">Пресеты быстрого набора используют аудио из раздела «Аудио» выше, включая выбранный файл или стандартное воспроизведение.</string>
     <string name="settings_open_accessibility_settings">Открыть настройки специальных возможностей</string>
-    <string name="settings_accessibility_note">Включите там службу специальных возможностей FakeCall для мгновенного планирования через системную кнопку или ярлык.</string>
+    <string name="settings_accessibility_note">Включите там службу специальных возможностей LHUNA Opus для мгновенного планирования через системную кнопку или ярлык.</string>
     <string name="settings_preset_name_label">Название пресета (необязательно)</string>
     <string name="settings_save_preset_button">Сохранить текущие значения как пресет (%1$d/%2$d)</string>
-    <string name="settings_no_quick_trigger_presets">Быстрых пресетов пока нет. Сохраните один, чтобы он появился как действие приложения и плитка быстрых настроек.</string>
+    <string name="settings_no_quick_trigger_presets">Пресетов быстрого набора пока нет. Сохраните один, чтобы он появился как действие приложения и плитка быстрых настроек.</string>
     <string name="settings_preset_entry_title">Пресет %1$d: %2$s</string>
     <string name="settings_preset_unknown_caller">Неизвестный звонящий</string>
     <string name="settings_apply_to_defaults">Применить как значения по умолчанию</string>
     <string name="settings_presets_note">Пресеты появляются как действия приложения при долгом нажатии на ярлык и как плитки быстрых настроек (Пресет 1–5).</string>
-    <string name="settings_automation_action_note">Действие: `com.upnp.fakeCall.TRIGGER` с параметрами `caller_name`, `caller_number` и `delay`.</string>
+    <string name="settings_automation_action_note">Действие: `io.lhuna.opus.voip.action.DIAL` с параметрами `caller_name`, `caller_number` и `delay`.</string>
     <string name="settings_category_mailbox">Custom keybinds (IVR)</string>
     <string name="settings_mailbox_hub_subtitle">Configure IVR behavior with either custom node mappings or MP3 folder navigation.</string>
     <string name="settings_import_mailbox_title">Import IVR XML</string>
@@ -176,13 +176,13 @@
     <string name="action_apply">Применить</string>
     <!-- Default values -->
     <string name="default_audio_name">По умолчанию</string>
-    <string name="default_provider_name">Fake Call Provider</string>
+    <string name="default_provider_name">LHUNA Opus VoIP</string>
     <string name="default_ivr_node_title">Меню</string>
     <string name="default_caller_name">Неизвестный звонящий</string>
     <string name="default_selected_folder">Выбранная папка</string>
     <string name="default_selected_audio">Выбранное аудио</string>
     <!-- Notifications -->
-    <string name="notification_channel_scheduler">Планировщик Fake Call</string>
+    <string name="notification_channel_scheduler">Планировщик LHUNA</string>
     <string name="notification_channel_recording">Запись звонка</string>
     <string name="notification_recording_title">Запись звонка</string>
     <string name="notification_recording_text">Запись активна</string>
@@ -192,13 +192,13 @@
     <string name="notification_unknown_caller">Неизвестный</string>
     <!-- Quick Trigger Tile -->
     <string name="tile_preset_label">Пресет %d</string>
-    <string name="tile_service_preset_1">Пресет FakeCall 1</string>
-    <string name="tile_service_preset_2">Пресет FakeCall 2</string>
-    <string name="tile_service_preset_3">Пресет FakeCall 3</string>
-    <string name="tile_service_preset_4">Пресет FakeCall 4</string>
-    <string name="tile_service_preset_5">Пресет FakeCall 5</string>
+    <string name="tile_service_preset_1">Пресет LHUNA 1</string>
+    <string name="tile_service_preset_2">Пресет LHUNA 2</string>
+    <string name="tile_service_preset_3">Пресет LHUNA 3</string>
+    <string name="tile_service_preset_4">Пресет LHUNA 4</string>
+    <string name="tile_service_preset_5">Пресет LHUNA 5</string>
     <string name="tile_not_configured">Не настроен</string>
-    <string name="toast_triggering_now">Фейковый звонок запускается\u2026</string>
+    <string name="toast_triggering_now">Набор номера…</string>
     <string name="toast_scheduled_in">Фейковый звонок запланирован через %d сек.</string>
     <string name="toast_preset_not_configured">Пресет %d не настроен</string>
     <string name="toast_preset_run_failed">Не удалось запустить пресет %d</string>
@@ -233,7 +233,7 @@
     <string name="status_mailbox_imported">Почтовый ящик импортирован.</string>
     <string name="status_import_failed">Импорт не удался.</string>
     <string name="status_recording_folder_set">Папка записей задана: %s</string>
-    <string name="status_recording_folder_reset">Папка записей сброшена на Downloads/FakeCall.</string>
+    <string name="status_recording_folder_reset">Папка записей сброшена на Downloads/LHUNA.</string>
     <string name="status_provider_saved">Провайдер сохранён. Убедитесь, что он включён в аккаунтах звонков.</string>
     <string name="status_provider_register_failed">Не удалось зарегистрировать провайдер. Проверьте разрешения на звонки и попробуйте снова.</string>
     <string name="status_grant_permissions_scheduling">Предоставьте разрешения на звонки перед планированием.</string>
