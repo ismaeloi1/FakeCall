@@ -57,6 +57,7 @@ import io.lhuna.opus.voip.SimProviderOption
 import io.lhuna.opus.voip.ui.components.AnimatedIcon
 import io.lhuna.opus.voip.ui.components.ExpressiveButton
 import io.lhuna.opus.voip.ui.components.ExpressiveCardShape
+import io.lhuna.opus.voip.ui.components.SimProviderPickerDialog
 import io.lhuna.opus.voip.ui.components.expressiveSpring
 
 @Composable

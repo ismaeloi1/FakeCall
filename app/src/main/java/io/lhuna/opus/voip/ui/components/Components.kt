@@ -70,7 +70,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Close
@@ -86,6 +90,7 @@ import io.lhuna.opus.voip.CallerInputMode
 import io.lhuna.opus.voip.CustomPreset
 import io.lhuna.opus.voip.LhunaViewModel
 import io.lhuna.opus.voip.R
+import io.lhuna.opus.voip.SimProviderOption
 
 fun <T> expressiveSpring() = spring<T>(
     dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -917,4 +922,62 @@ fun AudioPreviewCard(
             }
         }
     }
+}
+
+@Composable
+fun SimProviderPickerDialog(
+    options: List<SimProviderOption>,
+    onSelect: (SimProviderOption) -> Unit,
+    onKeepCurrent: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.sim_provider_dialog_title)) },
+        text = {
+            Column {
+                Text(
+                    text = stringResource(R.string.sim_provider_dialog_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                LazyColumn {
+                    items(options) { option ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onSelect(option) }
+                                .padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = option.displayName,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                if (option.phoneNumber.isNotBlank()) {
+                                    Text(
+                                        text = option.phoneNumber,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                            TextButton(onClick = { onSelect(option) }) {
+                                Text(stringResource(R.string.sim_provider_use_this))
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onKeepCurrent) {
+                Text(stringResource(R.string.sim_provider_keep_current))
+            }
+        }
+    )
 }
