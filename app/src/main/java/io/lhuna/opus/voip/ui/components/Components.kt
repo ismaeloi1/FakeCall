@@ -957,13 +957,11 @@ fun SimProviderPickerDialog(
                                     text = option.displayName,
                                     style = MaterialTheme.typography.bodyLarge
                                 )
-                                if (option.phoneNumber.isNotBlank()) {
-                                    Text(
-                                        text = option.phoneNumber,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
+                                Text(
+                                    text = stringResource(R.string.sim_provider_slot_label, option.slotIndex + 1),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                             TextButton(onClick = { onSelect(option) }) {
                                 Text(stringResource(R.string.sim_provider_use_this))
